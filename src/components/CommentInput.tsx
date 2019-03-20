@@ -15,13 +15,38 @@ class CommentInput extends Component<IProps, IState> {
     content: '',
   }
 
-  handleChangeUsername(e: React.FormEvent) {
+  textarea!: HTMLTextAreaElement;
+
+  componentWillMount() {
+    this.loadUsername();
+  }
+
+  componentDidMount() {
+    this.textarea.focus();
+  }
+
+  private saveUsername(username: string) {
+    localStorage.setItem('username', username);
+  }
+
+  private loadUsername() {
+    const username = localStorage.getItem('username') || '';
+    this.setState({
+      username
+    });
+  }
+
+  handleBlurUsername(e: React.FormEvent) {
+    this.saveUsername((e.target as HTMLInputElement).value);
+  }
+
+  handleChangeUsername(e: React.ChangeEvent) {
     this.setState({
       username: (e.target as HTMLInputElement).value
     });
   }
 
-  handleChangeContent(e: React.FormEvent) {
+  handleChangeContent(e: React.ChangeEvent) {
     this.setState({
       content: (e.target as HTMLInputElement).value
     });
@@ -43,13 +68,16 @@ class CommentInput extends Component<IProps, IState> {
         <div className='comment-field'>
           <span className='comment-field-name'>用户名：</span>
           <div className='comment-field-input'>
-            <input value={this.state.username} onChange={this.handleChangeUsername.bind(this)} />
+            <input value={this.state.username}
+              onChange={this.handleChangeUsername.bind(this)}
+              onBlur={this.handleBlurUsername.bind(this)} />
           </div>
         </div>
         <div className='comment-field'>
           <span className='comment-field-name'>评论内容：</span>
           <div className='comment-field-input'>
-            <textarea value={this.state.content} onChange={(e) => this.handleChangeContent(e)} />
+            <textarea value={this.state.content} onChange={(e) => this.handleChangeContent(e)}
+              ref={(textarea: HTMLTextAreaElement) => this.textarea = textarea} />
           </div>
         </div>
         <div className='comment-field-button'>
@@ -61,6 +89,7 @@ class CommentInput extends Component<IProps, IState> {
       </div>
     );
   }
+
 }
 
 export default CommentInput;
