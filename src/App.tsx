@@ -1,28 +1,34 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import CommentInput from './components/CommentInput';
+import CommentList from './components/CommentList';
+import { IComment } from './types/index';
 
-class App extends Component {
+interface IState {
+  comments: IComment[]
+}
+
+class CommentApp extends Component<{}, IState> {
+
+  state = {
+    comments: []
+  }
+
+  handleSubmitComment(comment: IComment) {
+    const comments: IComment[] = JSON.parse(JSON.stringify(this.state.comments));
+    comments.push(comment);
+    this.setState({
+      comments: comments
+    })
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div className="wrapper">
+        <CommentInput onSubmit={this.handleSubmitComment.bind(this)} />
+        <CommentList comments={this.state.comments} />
       </div>
     );
   }
 }
 
-export default App;
+export default CommentApp;
