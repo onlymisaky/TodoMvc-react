@@ -13,6 +13,7 @@ class CommentInput extends Component<IProps, IState> {
   state = {
     username: '',
     content: '',
+    createdTime: 0
   }
 
   textarea!: HTMLTextAreaElement;
@@ -31,9 +32,7 @@ class CommentInput extends Component<IProps, IState> {
 
   private loadUsername() {
     const username = localStorage.getItem('username') || '';
-    this.setState({
-      username
-    });
+    this.setState({ username });
   }
 
   handleBlurUsername(e: React.FormEvent) {
@@ -55,7 +54,7 @@ class CommentInput extends Component<IProps, IState> {
   handleSubmit() {
     if (this.props.onSubmit) {
       const { username, content } = this.state;
-      this.props.onSubmit({ username, content });
+      this.props.onSubmit({ username, content, createdTime: Date.now() });
     }
     this.setState({
       content: ''

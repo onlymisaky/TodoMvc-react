@@ -13,12 +13,12 @@ class CommentApp extends Component<{}, IState> {
     comments: []
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.loadComments();
   }
 
-  private saveComments() {
-    localStorage.setItem('comments', JSON.stringify(this.state.comments));
+  private saveComments(comments: IComment[]) {
+    localStorage.setItem('comments', JSON.stringify(comments));
   }
 
   private loadComments() {
@@ -29,21 +29,25 @@ class CommentApp extends Component<{}, IState> {
     }
   }
 
-
   handleSubmitComment(comment: IComment) {
-    const comments: IComment[] = JSON.parse(JSON.stringify(this.state.comments));
+    const comments: IComment[] = [...this.state.comments];
     comments.push(comment);
-    this.setState({
-      comments: comments
-    });
-    this.saveComments();
+    this.setState({ comments });
+    this.saveComments(comments);
+  }
+
+  handleDeleteComment(index: number) {
+    const comments: IComment[] = [...this.state.comments];
+    comments.splice(index, 1);
+    this.setState({ comments });
+    this.saveComments(comments);
   }
 
   render() {
     return (
       <div className="wrapper">
         <CommentInput onSubmit={this.handleSubmitComment.bind(this)} />
-        <CommentList comments={this.state.comments} />
+        <CommentList comments={this.state.comments} onDeleteComment={this.handleDeleteComment.bind(this)} />
       </div>
     );
   }
